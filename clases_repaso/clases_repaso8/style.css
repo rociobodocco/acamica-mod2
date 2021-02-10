@@ -1,0 +1,10 @@
+div {
+    width: 30vw;
+    height: 30vw;
+    border: 0.05em solid black;
+}
+
+.divGrande  {
+    width: 50vw;
+    height: 10vw;
+}

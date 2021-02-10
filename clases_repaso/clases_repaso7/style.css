@@ -1,0 +1,19 @@
+.close-btn {
+    font-size: 30px;
+    font-weight: bold;
+    color: aliceblue;
+    position: absolute;
+    top: 0;
+    left: 90%;
+    cursor: pointer;
+}
+.close-btn:hover {
+    font-weight: 800;
+}
+.card-visible {
+    opacity: 1 !important;
+}
+.card-element {
+    opacity: 0;
+    transition: all 0.5s ease-out;
+}
