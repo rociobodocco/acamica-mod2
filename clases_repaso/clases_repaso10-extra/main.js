@@ -16,60 +16,97 @@ const getSinglePokemons =  async (base) => {
     }
 }
 
-const getimagesPokemon =  async (base) => {
+const getabilitiesPokemon =  async (base) => {
     try {
-        const imgPokemon = await fetch(base);
-        return imgPokemon.json()
+        const abilities = await fetch(base);
+        return abilities.json()
     }catch (e) {
         console.log(e)
     }
 }
 
-// const getabilitiesPokemon =  async (base) => {
-//     try {
-//         const abilities = await fetch(base);
-//         return abilities.json()
-//     }catch (e) {
-//         console.log(e)
-//     }
-// }
+const getlocationAreasEncountersPokemon =  async (base) => {
+    try {
+        const locationAreasEncounters = await fetch(base);
+        return locationAreasEncounters.json()
+    }catch (e) {
+        console.log(e)
+    }
+}
 
-// const getlocationAreasEncountersPokemon =  async (base) => {
-//     try {
-//         const locationAreasEncounters = await fetch(base);
-//         return locationAreasEncounters.json()
-//     }catch (e) {
-//         console.log(e)
-//     }
-// }
+let offsetPokemon = 0;
 
+//pagination
+const verMas = (ev) => {
+    offsetPokemon += 20;
+    getPokemonesGeneral();
+}
 
-
-document.addEventListener('DOMContentLoaded',async (ev)=> {
-    const BASE = "https://pokeapi.co/api/v2/pokemon";
+const getPokemonesGeneral = async (ev) => {
+    const BASE = `https://pokeapi.co/api/v2/pokemon/?limit=20&offset=${offsetPokemon}`;
     const pokemons = await getPokemons(BASE);
-    
 
     const pokemonsAsync = pokemons.results.map( async pokemon => {
-        console.log(pokemon.url)
         const singlePokemon = await getSinglePokemons(pokemon.url);
-        const imgP = await getimagesPokemon(pokemon.url);
-        // const abilitiesP = await getabilitiesPokemon(pokemon.url);
-        // const locationEncountersP = await getlocationAreasEncountersPokemon(pokemon.url);
-        
+        const abilitiesP = await getabilitiesPokemon(`https://pokeapi.co/api/v2/ability/${singlePokemon.id}`)
+       
         return {
             name: pokemon.name,
-            image: imgP.sprites.other.dream_world.front_default,
+            image: singlePokemon.sprites.other.dream_world.front_default,
             id: singlePokemon.id,
             weight: singlePokemon.weight,
             height: singlePokemon.height,
-            // abilities: abilitiesP.abilities.ability,
-            // location_encounters: locationEncountersP.location_area_encounters
+            abilities: abilitiesP.name,
         }
     })
-        
+
+
+
     const pokemonsData = await Promise.all (pokemonsAsync)
-    console.log (pokemonsData)
-    printPokemos(pokemonsData);
+
+        
+        pokemonsData.forEach(info => {
+            const containerCards = document.querySelector('#containerPokemons');
+            const cardBase = document.createElement('div');
+            cardBase.classList.add('card');
+            cardBase.innerHTML = `<h3>${info.name}</h3>
+            <div class="imgPokemon"><img src="${info.image}" alt="img1"></div>
+            <div class="descriptionPokemon">
+                <ul>
+                    <li>Id:  ${info.id}</li>
+                    <li>Weight: ${info.weight}</li>
+                    <li>Height: ${info.height}</li>
+                    <li>Ability: ${info.abilities}</li>
+                </ul>
+            </div>`
+
+            containerCards.appendChild(cardBase);        
+        });
+    
+}
+
+
+//create "ver mas"
+const createButton = () => {
+    const containerCards = document.querySelector('#containerPokemons');
+    const verMasBtn = document.createElement('span');
+    verMasBtn.classList.add('verMasBtn')
+    verMasBtn.innerHTML = `<img src="./images/902px-Pokebola-pokeball-png-0.png" alt="pokeball">`;
+    containerCards.appendChild(verMasBtn)
+
+    verMasBtn.addEventListener('click', verMas)
+}
+
+
+document.addEventListener('DOMContentLoaded',async (ev)=> {
+    // const pokemonesBtn = document.querySelector('.get-pokemon');
+    // pokemonesBtn.classList.add('hidden');
+    getPokemonesGeneral();
+    createButton();
 })
+
+
+
+
+
 

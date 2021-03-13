@@ -36,6 +36,12 @@ main #containerPokemons {
     padding: 1em;
 }
 
+.verMasBtn img {
+    align-self: end;
+    width: 30vw;
+    padding: 1em;
+}
+
 .card {
     display: flex;
     flex-direction: column;
